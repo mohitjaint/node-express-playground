@@ -23,3 +23,16 @@ onst connectDB = async () =>{
 ```js
 import connectDB from "./db/index.js";
 ```
+
+## Lecture 8
+
+1. Check what is there in the Error class and why we set it to null usually.
+2. Study what this code chunk do :
+```js
+if(stack){
+            this.stack = stack;
+}
+else {
+    Error.captureStackTrace(this, this.constructor);
+}
+```
