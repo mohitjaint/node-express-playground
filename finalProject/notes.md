@@ -36,3 +36,33 @@ else {
     Error.captureStackTrace(this, this.constructor);
 }
 ```
+
+## Lecture 9
+
+1. Mongoose provide middlewares like pre (you can perform some task just before the data is stored) and post (you can perform some task just after the data is stored), and many more. Example :
+```js
+userSchema.pre("save", async function(next){
+    if(!this.isModified('password')) return next();
+    this.password = await bcrypt.hash(this.password, 10)
+    next()
+})
+```
+- here we are encrypting the password using bcrypt just before saving it. 
+
+2. We can also create methods for a particular schema in mongoose, example :
+```js
+userSchema.methods.generateAccessToken = function(){
+    return jwt.sign(
+        {
+            _id : this._id,
+            username : this.username,
+            email : this.email,
+            fullName : this.fullName,
+        }, //payload
+        process.env.ACCESS_TOKEN_SECRET, //secret,
+        {
+            expiresIn : process.env.ACCESS_TOKEN_EXPIRY
+        } //expiry
+    )
+}
+```
