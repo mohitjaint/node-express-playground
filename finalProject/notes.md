@@ -66,3 +66,56 @@ userSchema.methods.generateAccessToken = function(){
     )
 }
 ```
+
+## Lecture 10
+
+1. Middleware : "Jaate huye mujhse milkar jana"
+2. While uploading a file we save it temporarily on our server.
+3. Then we attempt to upload it on cloudinary.
+4. After that we unlink the file path. <span style = "color:red">Delete the file from local system (server)</span>
+
+5. Cloundinary method : 
+```js
+const uploadOnCloudinary = async (filePath) => {
+    try {
+        if(!filePath) {
+            throw new Error('File path is required');
+        }
+        //upload the file to cloudinary
+        const response = await cloudinary.uploader.upload(filePath, {
+            resource_type : 'auto',
+
+        })
+        //file has been uploaded successfully.
+        console.log('File uploaded successfully', response.url);
+
+        fs.unlinkSync(filePath); // remove the locally saved temporary file as it has been uploaded to cloudinary successfully.
+
+        return response;
+    }
+    catch (error) {
+        fs.unlinkSync(filePath); // remove the locally saved temporary file as uploading to cloudinary failed.
+        return null;
+    }
+}
+```
+
+6. Multer middleware : 
+```js
+import multer from 'multer';
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./public/temp")
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  }
+})
+
+export const upload = multer(
+    { 
+        storage: storage 
+    }
+);
+```
