@@ -119,3 +119,49 @@ export const upload = multer(
     }
 );
 ```
+
+## Lecture 12
+
+#### In this lecture we studied about routers, how to define them and how they works
+#### We also made a basic controller
+
+```js
+import {asyncHandler} from '../utils/asyncHandler.js';
+
+const registerUser = asyncHandler(async (req, res) => {
+    res.status(200).json({
+        message : "ok"
+    })
+});
+
+export {registerUser};
+```
+
+- Basic router : 
+```js
+import {Router} from 'express';
+import { registerUser } from '../controllers/user.controller.js';
+
+const router = Router();
+
+router.route("/register").post(registerUser);
+
+export default router;
+```
+
+- app.js
+```js 
+//routes import 
+
+import userRouter from "./routes/user.routes.js";
+
+//routes declaration
+
+app.use("/api/v1/users", userRouter);
+```
+-  When we will visit ```http//localhost:8000/api/v1/users```, the server will pass it to the router, then the router will route it to ```http//localhost:8000/api/v1/users/register```, now the controller will be called, and controller will send the response we set. Here it is 
+```js
+res.status(200).json({
+    message : "ok"
+})
+```
