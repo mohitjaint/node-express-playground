@@ -165,3 +165,36 @@ res.status(200).json({
     message : "ok"
 })
 ```
+
+---
+## Lecture 16
+
+- When making the logout method, we require the user details like _id and access tokens. But its not appropriate to ask them to user when clicking the logout button.
+- To solve this problem we use a middleware to extract this info for us.
+
+- ```verifyJWT``` middleware :
+```js
+export const verifyJWT = async(req, res, next) => {
+
+    try {
+        const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
+    
+        if(!token){
+            throw new ApiError(401, "Unauthorized");
+        }
+    
+        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    
+        const user = await User.findById(decodedToken?._id).select("-password -refreshToken")
+        if(!user){
+            throw new ApiError(401, "Invalid access token");
+        }
+    
+        req.user = user;
+        next();
+    } catch (error) {
+        throw new ApiError(401, "Unauthorized");
+    }
+}
+```
+- It uses cookies to extract the user object, then this object is passed to next method (another middleware or controller).
