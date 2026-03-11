@@ -198,3 +198,16 @@ export const verifyJWT = async(req, res, next) => {
 }
 ```
 - It uses cookies to extract the user object, then this object is passed to next method (another middleware or controller).
+
+---
+
+## Lecture 17
+
+- We handle text and file updation differently because : 
+
+| Text Data           | Image/File Data                |
+| ------------------- | ------------------------------ |
+| JSON                | multipart/form-data            |
+| Simple request      | Requires file parsing (Multer) |
+| No external storage | Needs Cloudinary / S3          |
+| Small payload       | Large payload                  |
